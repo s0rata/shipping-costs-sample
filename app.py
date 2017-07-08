@@ -4,10 +4,11 @@ import urllib
 import json
 import os
 
-from flask import Flask
-from flask import json
-from flask import request
-from flask import make_response
+from flask         import Flask
+from flask         import json
+from flask         import request
+from flask         import make_response
+from weather       import Weather
 
 
 # Flask app should start in global layout
@@ -16,8 +17,8 @@ app = Flask(__name__)
 
 @app.route('/webhook', methods=['POST', 'GET'])
 def webhook():
-    res = {'webhook':'Enabled'}
-    r = json.jsonify(webhook=res)
+    r = "Welcome"
+
     if request.method == "POST":
         req = request.get_json(silent=True, force=True)
 
@@ -33,18 +34,32 @@ def webhook():
     return r
 
 def makeWebhookResult(req):
-    if req.get("result").get("action") != "shipping.cost":
-        return {}
     result = req.get("result")
+    action = result.get("action")
     parameters = result.get("parameters")
-    zone = parameters.get("shipping-zone")
 
-    cost = {'Europe':100, 'North America':200, 'South America':300, 'Asia':400, 'Africa':500}
+    if action != "shipping.cost" and action != "weather.now":
+        return {}
+    else:
+        # webhook for shipping cost
+        if action == "shipping.cost":
+            zone = parameters.get("shipping-zone")
 
-    speech = "The cost of shipping to " + zone + " is " + str(cost[zone]) + " euros."
+            cost = {'Europe':100, 'North America':200, 'South America':300, 'Asia':400, 'Africa':500}
 
-    print("Response:")
-    print(speech)
+            speech = "The cost of shipping to " + zone + " is " + str(cost[zone]) + " euros."
+
+        # webhook for weather
+        if action == "weather.now":
+            zone = parameters.get('geo.city', "phnom penh")
+            # apiurl = "api.openweathermap.org/data/2.5/forecast?q=%s&APPID=%s"%(zone,apikey)
+            weather = Weather()
+            lookup  = weather.weather.lookup_by_location(zone)
+            condition = lookup.condition()
+            speech = "The current temperature is %s in %s. The sky is %s."%(condition.get('temp'),zone,condition.get('text'))
+
+        print("Response:")
+        print(speech)
 
     return {
         "speech": speech,
