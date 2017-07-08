@@ -3,12 +3,13 @@
 import urllib
 import json
 import os
+import requests
 
 from flask         import Flask
 from flask         import json
 from flask         import request
 from flask         import make_response
-from weather       import Weather
+# from weather       import Weather
 
 
 # Flask app should start in global layout
@@ -34,9 +35,9 @@ def webhook():
     return r
 
 def makeWebhookResult(req):
-    result = req.get("result")
-    action = result.get("action")
-    parameters = result.get("parameters")
+    result = req.get("result",{})
+    action = result.get("action","")
+    parameters = result.get("parameters",{})
 
     if action != "shipping.cost" and action != "weather.now":
         return {}
@@ -52,11 +53,15 @@ def makeWebhookResult(req):
         # webhook for weather
         if action == "weather.now":
             zone = parameters.get('geo.city', "phnom penh")
-            # apiurl = "api.openweathermap.org/data/2.5/forecast?q=%s&APPID=%s"%(zone,apikey)
-            weather = Weather()
-            lookup  = weather.weather.lookup_by_location(zone)
-            condition = lookup.condition()
-            speech = "The current temperature is %s in %s. The sky is %s."%(condition.get('temp'),zone,condition.get('text'))
+            apiurl = "api.openweathermap.org/data/2.5/forecast?q=%s&APPID=%s"%(zone,apikey)
+            r   = requests.get(apiurl)
+            result = eval(r.text)
+            main = result.get('main')
+            temp = main.get('temp')
+            # weather = Weather()
+            # lookup  = weather.weather.lookup_by_location(zone)
+            # condition = lookup.condition()
+            speech = "The current temperature in %s is %s."%(zone,temp)
 
         print("Response:")
         print(speech)
