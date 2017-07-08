@@ -9,7 +9,7 @@ from flask         import Flask
 from flask         import json
 from flask         import request
 from flask         import make_response
-# from weather       import Weather
+from config        import *
 
 
 # Flask app should start in global layout
@@ -61,7 +61,7 @@ def makeWebhookResult(req):
             # weather = Weather()
             # lookup  = weather.weather.lookup_by_location(zone)
             # condition = lookup.condition()
-            speech = "The current temperature in %s is %s."%(zone,temp)
+            speech = "The current temperature in %s is %s K."%(zone,temp)
 
         print("Response:")
         print(speech)
