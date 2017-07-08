@@ -52,12 +52,14 @@ def makeWebhookResult(req):
 
         # webhook for weather
         if action == "weather.now":
-            zone = parameters.get('geo.city', "phnom penh")
+            zone = parameters.get('geo-city', "Phnom Penh")
             apiurl = "http://api.openweathermap.org/data/2.5/forecast?q=%s&APPID=%s"%(zone,apikey)
             r   = requests.get(apiurl)
             result = eval(r.text)
             main = result.get('main')
+            # print "main:",main
             temp = main.get('temp')
+            # print "temp:",temp
             # weather = Weather()
             # lookup  = weather.weather.lookup_by_location(zone)
             # condition = lookup.condition()
