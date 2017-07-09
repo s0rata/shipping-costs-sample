@@ -53,17 +53,18 @@ def makeWebhookResult(req):
         # webhook for weather
         if action == "weather.now":
             zone = parameters.get("weather-location")
-            apiurl = "http://api.openweathermap.org/data/2.5/forecast?q=%s&APPID=%s"%(zone,apikey)
+            query = "q=%s"%(zone)
+            appid = "APPID=%s"%(apikey)
+            qtype = "type=accurate"
+            units = "units=metric"
+            apiurl = "http://api.openweathermap.org/data/2.5/forecast?%s&%s&%s&%s"%(query,appid,qtype,units)
             r   = requests.get(apiurl)
             result = eval(r.text)
-            main = result.get('list')[0]
-            # print "main:",main
+            l = result.get('list')[0]
+            main = l.get('main')
             temp = main.get('temp')
-            print "temp:",temp
-            # weather = Weather()
-            # lookup  = weather.weather.lookup_by_location(zone)
-            # condition = lookup.condition()
-            speech = "The current temperature in %s is %s K."%(zone,temp)
+    
+            speech = "The current temperature in %s is %s degree celcius."%(zone,temp)
 
         print("Response:")
         print(speech)
