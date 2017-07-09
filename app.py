@@ -56,10 +56,10 @@ def makeWebhookResult(req):
             apiurl = "http://api.openweathermap.org/data/2.5/forecast?q=%s&APPID=%s"%(zone,apikey)
             r   = requests.get(apiurl)
             result = eval(r.text)
-            main = result.get('main')
+            main = result.get('list')[0]
             # print "main:",main
             temp = main.get('temp')
-            # print "temp:",temp
+            print "temp:",temp
             # weather = Weather()
             # lookup  = weather.weather.lookup_by_location(zone)
             # condition = lookup.condition()
