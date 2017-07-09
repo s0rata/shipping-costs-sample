@@ -63,7 +63,7 @@ def makeWebhookResult(req):
             l = result.get('list')[0]
             main = l.get('main')
             temp = main.get('temp')
-            print zone
+
             speech = "The current temperature in %s is %s degree celcius."%(zone,temp)
 
         print("Response:")
