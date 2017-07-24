@@ -55,32 +55,32 @@ def getCalendar(parameters):
     credentials = get_credentials()
     http = credentials.authorize(httplib2.Http())
     service = discovery.build('calendar', 'v3', http=http)
-
     # date = parameters.get('date')
 
     now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
     print('Getting the upcoming 10 events')
     eventsResult = service.events().list(
-        calendarId='primary', timeMin=now, maxResults=10, singleEvents=True,
+        calendarId='primary', timeMin=now, maxResults=1, singleEvents=True,
         orderBy='startTime').execute()
     events = eventsResult.get('items', [])
 
+    text        = ""
+    speech      = ""
     if not events:
         speech = 'You have no upcoming events found.'
     else:
-        text        = ""
-        firstEvent  = event[0]
-        firstEventStart = firstEvent['start'].get('dateTime', event['start'].get('date'))
-        speech      = "You have %s at %s"%(firstEventStart,firstEvent['summary'])
+        firstEvent  = events[0]
+        firstEventStart = firstEvent['start'].get('dateTime', firstEvent['start'].get('date'))
+        speech      = "You have %s at %s"%(str(firstEvent['summary']),str(firstEventStart))
 
         for event in events:
             start = event['start'].get('dateTime', event['start'].get('date'))
-            text    += "%s at %s"%(event['summary'], start)
+            text    += "%s at %s"%(str(event['summary']), str(start))
 
-    return {
-        "speech": speech,
-        "displayText": text,
-        #"data": {},
-        # "contextOut": [],
-        "source": "apiai-onlinestore-shipping"
-    }
+    result = {
+                "speech": speech,
+                "displayText": text,
+                "source": "apiai-onlinestore-shipping"
+            }
+    print (result)
+    return result

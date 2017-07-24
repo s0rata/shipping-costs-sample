@@ -7,7 +7,10 @@ from flask          import Flask
 from flask          import json
 from flask          import request
 from flask          import make_response
-from .register       import *
+
+from app.calendar.views     import *
+from app.shipping.views     import *
+from app.weather.views      import *
 
 # Flask app should start in global layout
 app = Flask(__name__)
@@ -36,18 +39,16 @@ def makeWebhookResult(req):
     action = result.get("action","")
     parameters = result.get("parameters",{})
 
-    if action != "shipping.cost" and action != "weather.now":
-        return {}
-    else:
-        # webhook for shipping cost
-        if action == "shipping.cost":
-            result = getShippingCost(parameters)
+    result = {}
+    # webhook for shipping cost
+    if action == "shipping.cost":
+        result = getShippingCost(parameters)
 
-        # webhook for weather
-        if action == "weather.now":
-            result = getWeather(parameters)
+    # webhook for weather
+    if action == "weather.now":
+        result = getWeather(parameters)
 
-        if action == "calendar.view":
-            result == getCalendar(parameters)
+    if action == "calendar.view":
+        result = getCalendar(parameters)
 
     return result

@@ -1,9 +1,9 @@
-import config
+import app.config as config
 import requests
 def getWeather(parameters):
     zone = parameters.get("geo-city")
     query = "q=%s"%(zone)
-    appid = "APPID=%s"%(apikey)
+    appid = "APPID=%s"%(config.apikey)
     qtype = "type=accurate"
     units = "units=metric"
     apiurl = "http://api.openweathermap.org/data/2.5/forecast?%s&%s&%s&%s"%(query,appid,qtype,units)
