@@ -47,4 +47,7 @@ def makeWebhookResult(req):
         if action == "weather.now":
             result = getWeather(parameters)
 
+        if action == "calendar.view"
+            result == getCalendar(parameters)
+
     return result
